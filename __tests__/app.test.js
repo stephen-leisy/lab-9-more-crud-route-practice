@@ -15,6 +15,14 @@ describe('lab-9-more-crud-route-practice routes', () => {
     ghostAge: 44,
   };
 
+  const anotherGhost = {
+    name: 'spooooky',
+    type: 'spokky ghost',
+    scary: true,
+    location: 'Your attic',
+    ghostAge: 3,
+  };
+
   it('adds a ghost to the ghosts table', async () => {
     const newGhost = await request(app).post('/api/v1/ghosts').send(testGhost);
 
@@ -29,7 +37,8 @@ describe('lab-9-more-crud-route-practice routes', () => {
   });
 
   it('returns all ghosts', async () => {
-     const newGhost = await request(app).post('/api/v1/ghosts').send(testGhost);
+    await request(app).post('/api/v1/ghosts').send(testGhost);
+    await request(app).post('/api/v1/ghosts').send(anotherGhost);
     const allGhosts = await request(app).get('/api/v1/ghosts');
 
     expect(allGhosts.body).toEqual([
@@ -41,6 +50,22 @@ describe('lab-9-more-crud-route-practice routes', () => {
         location: 'NYC',
         ghostAge: 44,
       },
+      {
+        id: expect.any(String),
+        name: 'spooooky',
+        type: 'spokky ghost',
+        scary: true,
+        location: 'Your attic',
+        ghostAge: 3,
+      },
     ]);
+  });
+
+  it('returns a single ghost by ID', async () => {
+    const ghost = await request(app).post('/api/v1/ghosts').send(testGhost);
+    
+    const getGhost = await request(app).get(`/api/v1/ghosts/${ghost.body.id}`);
+
+    expect(getGhost.body).toEqual(ghost.body);
   });
 });
