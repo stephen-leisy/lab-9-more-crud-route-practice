@@ -63,9 +63,32 @@ describe('lab-9-more-crud-route-practice routes', () => {
 
   it('returns a single ghost by ID', async () => {
     const ghost = await request(app).post('/api/v1/ghosts').send(testGhost);
-    
+
     const getGhost = await request(app).get(`/api/v1/ghosts/${ghost.body.id}`);
 
     expect(getGhost.body).toEqual(ghost.body);
   });
+
+  it('modifies scary value on an existing ghost', async () => {
+    const ghost = await request(app).post('/api/v1/ghosts').send(testGhost);
+
+    const changedGhost = await request(app).put(`/api/v1/ghosts/${ghost.body.id}`).send({ scary: true });
+
+    expect(changedGhost.body).toEqual({ 
+      id: expect.any(String),
+      name: 'slimer',
+      type: 'slime ghost',
+      scary: true,
+      location: 'NYC',
+      ghostAge: 44,});
+  });
+
+  it('deletes a ghost from the DB', async () => {
+    const ghost = await request(app).post('/api/v1/ghosts').send(testGhost);
+    await request(app).delete(`/api/v1/ghosts/${ghost.body.id}`);
+    const deleteCheck = await request(app).get('/api/v1/ghosts');
+
+    expect(deleteCheck.body).toEqual([]);
+
+  })
 });
