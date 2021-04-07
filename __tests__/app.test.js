@@ -3,10 +3,12 @@ const setup = require('../data/setup');
 const request = require('supertest');
 const app = require('../lib/app');
 
+
 describe('lab-9-more-crud-route-practice routes', () => {
   beforeEach(() => {
     return setup(pool);
   });
+
   const testGhost = {
     name: 'slimer',
     type: 'slime ghost',
@@ -17,7 +19,7 @@ describe('lab-9-more-crud-route-practice routes', () => {
 
   const anotherGhost = {
     name: 'spooooky',
-    type: 'spokky ghost',
+    type: 'spooky ghost',
     scary: true,
     location: 'Your attic',
     ghostAge: 3,
@@ -53,7 +55,7 @@ describe('lab-9-more-crud-route-practice routes', () => {
       {
         id: expect.any(String),
         name: 'spooooky',
-        type: 'spokky ghost',
+        type: 'spooky ghost',
         scary: true,
         location: 'Your attic',
         ghostAge: 3,
@@ -72,15 +74,18 @@ describe('lab-9-more-crud-route-practice routes', () => {
   it('modifies scary value on an existing ghost', async () => {
     const ghost = await request(app).post('/api/v1/ghosts').send(testGhost);
 
-    const changedGhost = await request(app).put(`/api/v1/ghosts/${ghost.body.id}`).send({ scary: true });
+    const changedGhost = await request(app)
+      .put(`/api/v1/ghosts/${ghost.body.id}`)
+      .send({ scary: true });
 
-    expect(changedGhost.body).toEqual({ 
+    expect(changedGhost.body).toEqual({
       id: expect.any(String),
       name: 'slimer',
       type: 'slime ghost',
       scary: true,
       location: 'NYC',
-      ghostAge: 44,});
+      ghostAge: 44,
+    });
   });
 
   it('deletes a ghost from the DB', async () => {
@@ -89,6 +94,32 @@ describe('lab-9-more-crud-route-practice routes', () => {
     const deleteCheck = await request(app).get('/api/v1/ghosts');
 
     expect(deleteCheck.body).toEqual([]);
+  });
+});
 
-  })
+describe('test routes for monsters', () => {
+  beforeEach(() => {
+    return setup(pool);
+  });
+
+  const testMonster1 = {
+    name: 'creature',
+    location: 'black lagoon',
+    type: 'lagoon monster',
+    filmMonster: true,
+  };
+
+  it('inserts a monster into the database', async () => {
+    const newMonster = await request(app)
+      .post('/api/v1/monsters')
+      .send(testMonster1);
+
+    expect(newMonster.body).toEqual({
+      id: expect.any(String),
+      name: 'creature',
+      location: 'black lagoon',
+      type: 'lagoon monster',
+      filmMonster: true,
+    });
+  });
 });

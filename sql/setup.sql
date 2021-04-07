@@ -8,3 +8,13 @@ CREATE TABLE ghosts (
     location TEXT NOT NULL,
     ghost_age INTEGER CHECK (ghost_age > 0) NOT NULL
 );
+
+DROP TABLE IF EXISTS monsters;
+
+CREATE TABLE monsters (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    monster_name TEXT NOT NULL,
+    monster_location TEXT NOT NULL,
+    monster_type TEXT NOT NULL,
+    film_monster BOOLEAN NOT NULL
+);
