@@ -27,4 +27,20 @@ describe('lab-9-more-crud-route-practice routes', () => {
       ghostAge: 44,
     });
   });
+
+  it('returns all ghosts', async () => {
+     const newGhost = await request(app).post('/api/v1/ghosts').send(testGhost);
+    const allGhosts = await request(app).get('/api/v1/ghosts');
+
+    expect(allGhosts.body).toEqual([
+      {
+        id: expect.any(String),
+        name: 'slimer',
+        type: 'slime ghost',
+        scary: false,
+        location: 'NYC',
+        ghostAge: 44,
+      },
+    ]);
+  });
 });
